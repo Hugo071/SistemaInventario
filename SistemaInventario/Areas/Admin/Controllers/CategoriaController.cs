@@ -7,11 +7,11 @@ using SistemaInventario.Utilidades;
 namespace SistemaInventario.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class BodegaController : Controller
+    public class CategoriaController : Controller
     {
         // Unidad de trabajo para trabajar en la BD
         private readonly IUnidadTrabajo _unidadTrabajo;
-        public BodegaController(IUnidadTrabajo unidadTrabajo)
+        public CategoriaController(IUnidadTrabajo unidadTrabajo)
         {
             _unidadTrabajo = unidadTrabajo;
         }
@@ -23,54 +23,54 @@ namespace SistemaInventario.Areas.Admin.Controllers
         // Método Upsert GET
         public async Task<IActionResult> Upsert(int? id)
         {
-            Bodega bodega = new Bodega();
+            Categoria categoria = new Categoria();
             if (id == null)
             {
                 // Creamos un nuevo registro
-                bodega.Estado = true;
-                return View(bodega);
+                categoria.Estado = true;
+                return View(categoria);
             }
-            bodega = await _unidadTrabajo.Bodega.Obtener(id.GetValueOrDefault());
-            if(bodega == null)
+            categoria = await _unidadTrabajo.Categoria.Obtener(id.GetValueOrDefault());
+            if(categoria == null)
             {
                 return NotFound();
             }
-            return View(bodega);
+            return View(categoria);
         }
 
         // Tag's 
         [HttpPost]
         [ValidateAntiForgeryToken] // Seguridad
-        public async Task<IActionResult> Upsert(Bodega bodega)
+        public async Task<IActionResult> Upsert(Categoria categoria)
         {
             if(ModelState.IsValid)
             {
-                if(bodega.Id == 0)
+                if(categoria.Id == 0)
                 {
-                    await _unidadTrabajo.Bodega.Agregar(bodega);
+                    await _unidadTrabajo.Categoria.Agregar(categoria);
                     TempData[DS.Exitosa] = "La Categoria se creó con éxito";
                 }
                 else
                 {
-                    _unidadTrabajo.Bodega.Actualizar(bodega);
+                    _unidadTrabajo.Categoria.Actualizar(categoria);
 					TempData[DS.Exitosa] = "La Categoria se actualizó con éxito";
 				}
                 await _unidadTrabajo.Guardar();
                 return RedirectToAction(nameof(Index));
             }
 			TempData[DS.Error] = "Error al grabar la Categoria";
-			return View(bodega);
+			return View(categoria);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var bodegaDB = await _unidadTrabajo.Bodega.Obtener(id);
-            if(bodegaDB == null)
+            var categoriaDB = await _unidadTrabajo.Categoria.Obtener(id);
+            if(categoriaDB == null)
             {
                 return Json(new { success = false, message = "Error al borrar el registro en la Base de Datos" });
             }
-            _unidadTrabajo.Bodega.Remover(bodegaDB);
+            _unidadTrabajo.Categoria.Remover(categoriaDB);
             await _unidadTrabajo.Guardar();
             return Json(new { success = true, message = "Categoria eliminada con éxito" });
         }
@@ -81,7 +81,7 @@ namespace SistemaInventario.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> ObtenerTodos()
         {
-            var todos = await _unidadTrabajo.Bodega.ObtenerTodos();
+            var todos = await _unidadTrabajo.Categoria.ObtenerTodos();
             return Json(new {data = todos});
         }
 
@@ -89,7 +89,7 @@ namespace SistemaInventario.Areas.Admin.Controllers
         public async Task<IActionResult> ValidarNombre(string nombre, int id=0)
         {
             bool valor = false;
-            var lista = await _unidadTrabajo.Bodega.ObtenerTodos();
+            var lista = await _unidadTrabajo.Categoria.ObtenerTodos();
             if(id == 0)
             {
                 valor = lista.Any(b => b.Nombre.ToLower().Trim() == nombre.ToLower().Trim());
