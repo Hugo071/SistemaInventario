@@ -161,9 +161,9 @@ namespace SistemaInventario.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    if(!await _roleManager.RoleExistsAsync(DS.Role_Client)) 
+                    if(!await _roleManager.RoleExistsAsync(DS.Role_Admin)) 
                     {
-                        await _roleManager.CreateAsync(new IdentityRole(DS.Role_Client));
+                        await _roleManager.CreateAsync(new IdentityRole(DS.Role_Admin));
                     }
                     if (!await _roleManager.RoleExistsAsync(DS.Role_Cliente))
                     {
@@ -176,7 +176,7 @@ namespace SistemaInventario.Areas.Identity.Pages.Account
                     // Asignamos el rol de usuario real al usuario que se esta creando
                     if(user.Role == null)
                     {
-                        await _userManager.AddToRoleAsync(user, DS.Role_Client);
+                        await _userManager.AddToRoleAsync(user, DS.Role_Admin);
                     }
                     else
                     {

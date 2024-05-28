@@ -61,8 +61,8 @@
             <!-- Configuramos el Select para los roles de usuario -->
             @if(User.IsInRole(DS.Role_Admin))
             {
+                <label asp-for="Input.Role">Rol</label>
                 <div class="formform-floating mb-3">
-                    <label asp-for="Input.Role">Rol</label>
                     <select asp-for="Input.Role" class="form-select" asp-items="@Model.Input.ListaRol">
                         <option value="" selected>Selecciona un Rol</option>
                     </select>
